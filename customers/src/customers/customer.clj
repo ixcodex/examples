@@ -4,7 +4,7 @@
 (defn display-name [{:keys [firstname lastname]}]
   (format "%s %s" firstname lastname))
 
-(defmodel customer [:person :contact]
+(defaggregate customer [:person :contact]
   :attributes [[:firstname    [:required, :length 10, :pattern "(.*)"]]
                [:lastname     [:required, :length 5]]
                [:display-name [:derived-using display-name]]
@@ -26,7 +26,7 @@
 
 
 
-(defmodel account-request [:account :request]
+(defvalue account-request [:account :request]
   :attributes [[:account-type [:one-of [:checking :credit]]]])
 
 ;; Process logic
