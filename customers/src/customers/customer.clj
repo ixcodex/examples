@@ -1,5 +1,6 @@
 (ns customers.customer)
 
+;; Data logic
 (defn display-name [{:keys [firstname lastname]}]
   (format "%s %s" firstname lastname))
 
@@ -10,8 +11,9 @@
                [:address-1    []]
                [:postcode     [:postcode]]
                [:home-page    [:url]]]
-  :linked-to  [[:many address :by customer-id]])
+  :linked-to  [[:many phone :by customer-id]])
 
+;; Validation logic
 (defn some-test-of [param1 param2]
   (if (= param1 param2)))
 
@@ -22,11 +24,22 @@
 (validate customer
   :with [validate-something, validate-something-else])
 
-(enhance customer :as jims-customer
-  :with {
-         :some-new-field [:required]})
 
 
+(defmodel account-request [:account :request]
+  :attributes [[:account-type [:one-of [:checking :credit]]]])
+
+;; Process logic
+(defprocess create-account :on customer [account-request]
+  (do-some-stuff-with-the-request))
+
+
+;; ====================================================================
+;;
+;; Extensibility....
+
+(defmodel jims-customer :derived-from customer [:jims-tag]
+  :adding {:some-new-field [:required]})
 
 (validate jims-customer
   :with [some-other-validator])
