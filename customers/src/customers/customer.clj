@@ -5,7 +5,8 @@
   (format "%s %s" firstname lastname))
 
 (defaggregate customer [:person :contact]
-  :attributes [[:firstname    [:required, :length 10, :pattern "(.*)"]]
+  :attributes [[:customer-id  [:uuid, :generated]]
+               [:firstname    [:required, :length 10, :pattern "(.*)"]]
                [:lastname     [:required, :length 5]]
                [:display-name [:derived-using display-name]]
                [:address-1    []]
@@ -16,6 +17,7 @@
 ;; Validation logic
 (defn some-test-of [param1 param2]
   (if (= param1 param2)))
+
 
 (defvalidator validate-something [{:keys [:firstname :secondname]}]
   (some-test-of firstname secondname)
@@ -38,7 +40,7 @@
 ;;
 ;; Extensibility....
 
-(defmodel jims-customer :derived-from customer [:jims-tag]
+(defaggregate jims-customer :derived-from customer [:jims-tag]
   :adding {:some-new-field [:required]})
 
 (validate jims-customer
